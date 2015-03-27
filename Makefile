@@ -1,9 +1,14 @@
-all: philote.min.js
+all: dist/philote.js dist/philote.min.js
 
-%.min.js: %.js dependencies
-	uglifyjs $< --mangle --compress > $@
+dist/%.js: src/%.js
+	$(eval VERSION = $(shell node -e 'console.log(require("package.json").version)'))
+	cat $< | sed -e 's/@VERSION@/$(VERSION)/' > $@
 
-dependencies:
+dist/%.min.js: dist/%.js node_modules/.up-to-date
+	uglifyjs $< --mangle --compress --output $@
+
+node_modules/.up-to-date: package.json
 	npm install
+	touch $@
 
-.PHONY: dependencies
+.PHONY: all

@@ -116,7 +116,7 @@
         }
     }
 
-    Philote.VERSION = "0.1.0";
+    Philote.VERSION = "@VERSION@";
 
     return Philote;
 });
