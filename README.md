@@ -8,7 +8,9 @@ This is the client side library for [philote.io][].
 var hub = new Philote();
 
 // Connect to a Hub.
-hub.connect("SIGNED_CONNECTION_TOKEN");
+hub.connect("SIGNED_CONNECTION_TOKEN", function() {
+    // Optional callback executed when connected to the socket server.
+});
 
 // Tell the server to start sending events on the specified channels (in
 // addition to any channels already subscribed to). This will internally
@@ -27,6 +29,9 @@ hub.publish("some-channel", "data");
 
 // Tell the server to stop sending events for a list of channels.
 hub.unsubscribe("some-channel", "other-channel");
+
+// Close the connection.
+hub.disconnect();
 ```
 
 ## Options
