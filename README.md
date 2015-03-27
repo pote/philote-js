@@ -1,6 +1,6 @@
 # Philote.js
 
-This is the client side library for [philote.io][].
+This is the client side library for [philote.io](https://philote.io).
 
 ## Usage
 
