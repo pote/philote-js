@@ -49,6 +49,7 @@
         }
 
         this.handlers = {};
+        this.sendQueue = [];
     }
 
     // Expose this so that users can easily use custom URLs.
@@ -58,8 +59,14 @@
         var url = this.options.server + "?token=" + encodeURIComponent(token);
         this.socket = new Websocket(url);
 
-        if (typeof callback === "function")
-            this.socket.onopen = callback;
+        this.socket.onopen = wrap(this, function() {
+            if (typeof callback === "function")
+                callback();
+
+            while (this.sendQueue.length > 0) {
+                this.publish.apply(this, this.sendQueue.shift());
+            }
+        });
 
         this.socket.onmessage = wrap(this, onMessage);
     }
@@ -99,7 +106,14 @@
     }
 
     Philote.prototype.publish = function(channel, data) {
-        console.log("Unimplemented yet...");
+        if (!this.socket || this.socket.readyState === 0) {
+            this.sendQueue.push([channel, data]);
+        } else if (this.socket.readyState === 1) {
+            var payload = JSON.stringify({ channel: channel, data: data });
+            this.socket.send(payload);
+        } else if (this.socket.readyState > 1) {
+            throw new Error("Can't publish data after disconnecting!");
+        }
     }
 
     Philote.VERSION = "0.1.0";
