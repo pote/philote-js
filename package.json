@@ -1,0 +1,13 @@
+{
+  "name": "Philote",
+  "version": "0.1.0",
+  "description": "The Philote.io browser client",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/philote/philote.js"
+  },
+  "readme": "./README.md",
+  "dependencies": {
+    "uglify-js": "^2.4.17"
+  }
+}
