@@ -95,6 +95,12 @@
 
     function onMessage(event) {
         var data = JSON.parse(event.data);
+
+        if ("error" in data) {
+            this.options.error(data);
+            return;
+        }
+
         var handlers = this.handlers[data.channel];
 
         if (!handlers || handlers.length === 0)
