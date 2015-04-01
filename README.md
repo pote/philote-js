@@ -40,6 +40,12 @@ The following options can be passed to the `Philote` constructor:
 
 ``` js
 {
+    // Websockets server to connect to. Usually not something you will change.
+    // `Philote.protocol` takes care of switching between `ws:` and `wss:` based
+    // on whether the current page has been served over a secure connection or
+    // not.
+    server: (Philote.protocol + "//ws.philote.io/"),
+
     // Options relevant for requests made against your own app to authorize new
     // channel subscriptions.
     auth: {
