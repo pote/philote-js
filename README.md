@@ -75,6 +75,37 @@ The following options can be passed to the `Philote` constructor:
 }
 ```
 
+## Filters
+
+Data sent and received in events *must* be strings. However, you will usually
+want to make that structured in some way, because you tend to send more than a
+single datum with each packet.
+
+In order to accommodate this, Philote.js has the concept of filters. Filters are
+functions that have a single parameter that can be composed to pre-process event
+data before it's sent to the server, or received from the server.
+
+For example, to pass arbitrary objects and have them serialize to/from JSON, you
+would do this:
+
+``` js
+hub.filters.in.push(JSON.parse);
+hub.filters.out.push(JSON.stringify);
+```
+
+With that in place, you can do this:
+
+``` js
+hub.on("channel", function(anObject) {
+    // anObject has already been parsed from JSON here.
+});
+
+// Here the payload will be serialized into JSON before being sent over the wire
+hub.publish("channel", { an: "object" });
+```
+
+You're welcome to add as many filters into the `in` and `out` queues.
+
 ## Authorization
 
 When a user tries to join a channel, the library will make a GET request against

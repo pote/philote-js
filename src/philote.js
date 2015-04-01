@@ -50,6 +50,7 @@
 
         this.handlers = {};
         this.sendQueue = [];
+        this.filters = { in: [], out: [] };
     }
 
     // Expose this so that users can easily use custom URLs.
@@ -94,20 +95,22 @@
     }
 
     function onMessage(event) {
-        var data = JSON.parse(event.data);
+        var event = JSON.parse(event.data);
 
-        if ("error" in data) {
-            this.options.error(data);
+        if ("error" in event) {
+            this.options.error(event);
             return;
         }
 
-        var handlers = this.handlers[data.channel];
+        var handlers = this.handlers[event.channel];
 
         if (!handlers || handlers.length === 0)
             return;
 
+        var payload = applyFilters(event.data, this.filters.in);
+
         for (var i = 0; i < handlers.length; ++i) {
-            handlers[i](data.data, data);
+            handlers[i](payload, event);
         }
     }
 
@@ -115,11 +118,18 @@
         if (!this.socket || this.socket.readyState === 0) {
             this.sendQueue.push([channel, data]);
         } else if (this.socket.readyState === 1) {
+            data = applyFilters(data, this.filters.out);
             var payload = JSON.stringify({ channel: channel, data: data });
             this.socket.send(payload);
         } else if (this.socket.readyState > 1) {
             throw new Error("Can't publish data after disconnecting!");
         }
+    }
+
+    function applyFilters(unfilteredData, filterChain) {
+        return filterChain.reduce(function(data, filter) {
+            return filter(data);
+        }, unfilteredData);
     }
 
     Philote.VERSION = "@VERSION@";
