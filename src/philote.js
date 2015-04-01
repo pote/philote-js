@@ -1,4 +1,4 @@
-(function(name, context, definition) {
+!function(name, context, definition) {
     if (typeof module != 'undefined' && module.exports) {
         module.exports = definition();
     } else if (typeof define == 'function' && define.amd) {
@@ -6,7 +6,7 @@
     } else {
         context[name] = definition();
     }
-})("Philote", this, function() {
+}("Philote", this, function() {
     "use strict";
 
     // Internal: Wrap a callback around a specific context.
