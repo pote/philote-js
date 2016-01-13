@@ -16,16 +16,7 @@
         }
     }
 
-    var protocol = (location.protocol === "https:") ? "wss:" : "ws:";
-
     var defaultOptions = {
-        server: protocol + "//ws.philote.io/",
-        auth: {
-            endpoint: "/philote/auth",
-            transport: "ajax",
-            params: {},
-            headers: {}
-        },
         error: function() {}
     }
 
@@ -35,16 +26,9 @@
         }
 
         var options = options || {};
-        var auth = options.auth || {};
 
         this.options = {
-            server: options.server || defaultOptions.server,
-            auth: {
-                endpoint: auth.endpoint || defaultOptions.auth.endpoint,
-                transport: auth.transport || defaultOptions.auth.transport,
-                params: auth.params || defaultOptions.auth.params,
-                headers: auth.headers || defaultOptions.auth.headers
-            },
+            url: options.url,
             error: options.error || defaultOptions.error
         }
 
@@ -53,11 +37,8 @@
         this.filters = { in: [], out: [] };
     }
 
-    // Expose this so that users can easily use custom URLs.
-    Philote.protocol = protocol;
-
     Philote.prototype.connect = function(token, callback) {
-        var url = this.options.server + "?token=" + encodeURIComponent(token);
+        var url = this.options.url + "/" + encodeURIComponent(token);
         this.socket = new WebSocket(url);
 
         this.socket.onopen = wrap(this, function() {
@@ -77,13 +58,6 @@
             this.socket.close();
     }
 
-    Philote.prototype.subscribe = function() {
-        console.log("Unimplemented yet...");
-    }
-
-    Philote.prototype.unsubscribe = function() {
-        console.log("Unimplemented yet...");
-    }
 
     Philote.prototype.on = function(channel, callback) {
         if (typeof callback !== "function") {
@@ -119,7 +93,7 @@
             this.sendQueue.push([channel, data]);
         } else if (this.socket.readyState === 1) {
             data = applyFilters(data, this.filters.out);
-            var payload = JSON.stringify({ channel: channel, data: data });
+            var payload = JSON.stringify({ channel: channel, data: data, event: 'message' });
             this.socket.send(payload);
         } else if (this.socket.readyState > 1) {
             throw new Error("Can't publish data after disconnecting!");
