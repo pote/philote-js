@@ -2,6 +2,7 @@
   "name": "Philote",
   "version": "0.1.0",
   "description": "The Philote.io browser client",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/philote/philote.js"
