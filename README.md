@@ -1,6 +1,6 @@
 # Philote.js
 
-This is the client side library for [philote.io](https://philote.io).
+This is the client side library for the [Philote](https://github.com/pote/philote) websockets server.
 
 ## Usage
 
@@ -31,10 +31,7 @@ The following options can be passed to the `Philote` constructor:
 ``` js
 {
     // Websockets server to connect to. Usually not something you will change.
-    // `Philote.protocol` takes care of switching between `ws:` and `wss:` based
-    // on whether the current page has been served over a secure connection or
-    // not.
-    url: ("ws://ws.philote.io/"),
+    url: ("ws://ws.your-philote-server.com/"),
 
     // Handler for any errors at the service level (such as invalid connection
     // tokens).
