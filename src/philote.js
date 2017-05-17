@@ -38,7 +38,7 @@
     }
 
     Philote.prototype.connect = function(token, callback) {
-        var url = this.options.url + "/" + encodeURIComponent(token);
+        var url = this.options.url + "?auth=" + encodeURIComponent(token);
         this.socket = new WebSocket(url);
 
         this.socket.onopen = wrap(this, function() {
